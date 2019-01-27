@@ -1,0 +1,146 @@
+@using System.Linq
+@using WebApplication1.EF.Models
+@model WebApplication1.EF.Models.Quiz
+
+@{
+    ViewBag.Title = "Тест";
+    Layout = "_Layout";
+}
+
+<div class="mb-2 d-flex flex-row align-items-center">
+    <span class="h4 d-flex flex-grow-1">Тест @Model.Name - Вопросов: @Model.Questions?.Count</span>
+    <span class="btn btn-outline-success btn-sm mr-3" data-toggle="modal" data-target="#add-question-modal">Добавить вопрос</span>
+    <!-- add question modal -->
+    <div class="modal fade" id="add-question-modal" tabindex="-1" role="dialog" aria-labelledby="add-question-modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Добавить вопрос</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form asp-controller="Home" asp-action="AddQuizQuestion">
+                    <div class="modal-body">
+                        <input name="QuizId" value="@Model.Id" hidden/>
+                        <textarea class="form-control" name="Value" rows="5" placeholder="Вопрос"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Добавить</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<ul class="list-group">
+    @foreach (var question in Model.Questions ?? Enumerable.Empty<Question>())
+    {
+        <div class="list-group-item list-group-item-action d-flex flex-row" data-toggle="collapse" href="#question-@question.Id" aria-expanded="false">
+            <div class="d-flex flex-grow-1 align-items-center">
+                <span class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#remove-question-modal-@question.Id">
+                    <i class="icon-cancel"></i>
+                </span>
+                <span class="mx-2">@question.Value</span>
+                <span class="badge-secondary badge">Ответов: @question.Answers?.Count</span>
+            </div>
+            <div>
+                <span class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#add-answer-modal-@question.Id">Добавить ответ</span>
+            </div>
+        </div>
+        
+        <!-- add answer modal -->
+        <div class="modal fade" id="add-answer-modal-@question.Id" tabindex="-1" role="dialog" aria-labelledby="add-question-modal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Добавить ответ</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form asp-controller="Home" asp-action="AddQuestionAnswer">
+                        <div class="modal-body">
+                            <input name="QuestionId" value="@question.Id" hidden/>
+                            <input name="quizId" value="@Model.Id" hidden/>
+                            Вопрос: @question.Value
+                            <textarea class="form-control" name="Value" rows="5" placeholder="Ответ"></textarea>
+                            <input name="Correct" type="checkbox" value="true" /><span>Правильный?</span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Добавить</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <li class="list-group collapse" id="question-@question.Id" style="">
+
+            @foreach (var answer in question.Answers ?? Enumerable.Empty<Answer>())
+            {
+                <div class="answer ml-3 list-group-item @(answer.Correct ? "list-group-item-success" : "list-group-item-danger")">
+                    <div class="d-inline">
+                        <span class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#remove-answer-modal-@answer.Id">
+                            <i class="icon-cancel"></i>
+                        </span>
+                    </div>
+                    <div class="d-inline">
+                        @answer.Value
+                    </div>
+                </div>
+                
+                <!-- remove answer modal -->
+                <div class="modal fade" id="remove-answer-modal-@answer.Id" tabindex="-1" role="dialog" aria-labelledby="remove-answer-modal-@answer.Id" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Удалить ответ</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form asp-controller="Home" asp-action="RemoveQuestionAnswer">
+                                <input name="Id" value="@answer.Id" hidden/>
+                                <div class="modal-body">
+                                    Ответ будет удален.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Удалить</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </li>
+
+        <!-- remove question modal -->
+        <div class="modal fade" id="remove-question-modal-@question.Id" tabindex="-1" role="dialog" aria-labelledby="remove-question-modal-@question.Id" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Удалить вопрос</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form asp-controller="Home" asp-action="RemoveQuizQuestion">
+                        <input name="Id" value="@question.Id" hidden/>
+                        <div class="modal-body">
+                            Вопрос и все его ответы будут удалены.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+
+</ul>

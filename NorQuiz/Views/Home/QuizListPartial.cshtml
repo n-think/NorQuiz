@@ -1,0 +1,50 @@
+@model IEnumerable<WebApplication1.EF.Models.Quiz>
+
+<h2>Список тестов</h2>
+<div class="list-group">
+    @foreach (var quiz in Model)
+    {
+        <a class="list-group-item list-group-item-action">
+            <div class="d-flex flex-row align-items-center">
+                <div class="flex-grow-1">
+                    @quiz.Name
+                    <span class="badge badge-secondary">Вопросов: @quiz.Questions.Count</span>
+                </div>
+                <div class="quiz-controls d-inline w-auto">
+                    <form class="form-inline d-inline" asp-controller="Home" asp-action="RunTest" method="get">
+                        <input class="form-control" name="questionCount" type="number" placeholder="кол-во вопросов"/>
+                        <span id="run-test-button" class="btn btn-outline-success"><i class="icon-right-dir"></i></span>
+                        <input name="Id" value="@quiz.Id" hidden>
+                    </form>
+                    <span onclick="window.location = '/editQuiz/@quiz.Id'" class="btn btn-outline-primary"><i class="icon-pencil"></i></span>
+                    <span class="btn btn-outline-danger" data-toggle="modal" data-target="#quiz-@quiz.Id"><i class="icon-cancel"></i></span>
+                </div>
+            </div>
+        </a>
+        <!-- Modal -->
+        <div class="modal fade" id="quiz-@quiz.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Удалить тест?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Все вопросы этого теста удалятся, и восстановить их будет нельзя.
+                    </div>
+                    <div class="modal-footer">
+                        <form asp-action="DeleteTest">
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                            <input name="Id" value="@quiz.Id" hidden/>
+                        </form>
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Отмена</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+

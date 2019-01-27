@@ -1,0 +1,58 @@
+@using WebApplication1.EF.Models
+@model RunTestModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h4>Тест @Model.Quiz.Name - Всего @Model.Quiz.Questions.Count вопросов</h4>
+
+<div class="d-flex justify-content-center">
+    <span id="check" class="btn btn-outline-success mx-3">Проверить</span>
+    <span id="next" class="btn btn-outline-primary mx-3">Далее</span>
+    <span id="reset" class="btn btn-outline-secondary mx-3 d-none">Сначала</span>
+</div>
+
+@foreach (var question in Model.Quiz.Questions.Take(Model.QuestionCount))
+{
+    <div class="question border border-dark rounded m-3">
+        <div class="h5 text-center m-3">
+            @question.Value
+        </div>
+        @foreach (var answer in question.Answers)
+        {
+            <div class="m-3 answer">
+                <input type="checkbox" class="big-checkbox"/>
+                <span class="answer-text" data-correct="@answer.Correct">@answer.Value</span>
+            </div>
+
+        }
+    </div>
+}
+@foreach (var question in Model.Quiz.Questions.Skip(Model.QuestionCount))
+{
+    <div class="question border border-dark rounded m-3 d-none">
+        <div class="h5 text-center m-3">
+            @question.Value
+        </div>
+        @foreach (var answer in question.Answers)
+        {
+            <div class="m-3 answer">
+                <input type="checkbox" class="big-checkbox"/>
+                <span class="answer-text" data-correct="@answer.Correct">@answer.Value</span>
+            </div>
+
+        }
+    </div>
+}
+@section Scripts
+{
+    <script>
+        var questionCount = @Model.QuestionCount;
+    </script>
+}
+
+
+
+
