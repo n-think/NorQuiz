@@ -5,7 +5,7 @@
 
 $("#run-test-button").on("click", gogopowerrangers);
 
-if (window.location.pathname.lastIndexOf("/runTest") === 0) {
+if (window.location.pathname.lastIndexOf("/RunTest") === 0) {
     loadRunTestEventHandlers()
 }
 
