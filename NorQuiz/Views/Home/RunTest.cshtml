@@ -9,10 +9,10 @@
 <h4>Тест @Model.Quiz.Name - Всего @Model.Quiz.Questions.Count вопросов</h4>
 
 <div class="d-flex justify-content-center">
-    <span id="check" class="btn btn-outline-success mx-3">Проверить</span>
-    <span id="next" class="btn btn-outline-primary mx-3 d-none">Далее</span>
-    <span id="show-results" class="btn btn-outline-secondary mx-3 d-none">Показать результаты</span>
-    <span id="reset" class="btn btn-outline-secondary mx-3 d-none">Сначала</span>
+    <button id="check" class="btn btn-outline-success mx-3">Проверить</button>
+    <button id="next" class="btn btn-outline-primary mx-3 d-none">Далее</button>
+    <button id="show-results" class="btn btn-outline-secondary mx-3" disabled>Показать результаты</button>
+    <button id="reset" class="btn btn-outline-secondary mx-3 d-none">Сначала</button>
 </div>
 <div id="quiz" data-id="@Model.Quiz.Id" data-total="@Model.Quiz.Questions.Count" data-errors="0" data-answered="0">
     @{ var qCounter = 1; }

@@ -91,7 +91,7 @@ function check() {
     $("#quiz").data().answered++;
     $(this).addClass("d-none");
     $("#next").removeClass("d-none");
-    $("#show-results").removeClass("d-none");
+    $("#show-results").removeAttr("disabled");
 }
 
 function next() {
