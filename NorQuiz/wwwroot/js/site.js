@@ -12,6 +12,7 @@ if (window.location.pathname.toLowerCase().lastIndexOf("/runtest") === 0) {
 function loadRunTestEventHandlers() {
     $("#check").on("click", check);
     $("#next").on("click", next);
+    $("#show-results").on("click", showResults);
     $("#reset").on("click", reset);
 }
 
@@ -87,8 +88,10 @@ function check() {
             }
         });
 
+    $("#quiz").data().answered++;
     $(this).addClass("d-none");
     $("#next").removeClass("d-none");
+    $("#show-results").removeClass("d-none");
 }
 
 function next() {
@@ -104,9 +107,6 @@ function next() {
     nextGroup.removeClass("d-none");
 
     if (invisibleUncompleted.length === 0) {
-        $("#next").addClass("d-none");
-        $("#check").addClass("d-none");
-        $("#reset").removeClass("d-none");
         showResults();
     }
     else{
@@ -117,9 +117,18 @@ function next() {
 }
 
 function showResults() {
+    $("#next").addClass("d-none");
+    $("#check").addClass("d-none");
+    $("#show-results").addClass("d-none");
+    $("#reset").removeClass("d-none");
+    
     let quiz = $("#quiz").addClass("d-none");
     
     let results = $("#results").removeClass("d-none");
+    
+    let answeredCount = quiz.data("answered");
+    
+    $("#totals-text").append(` | Отвечено вопросов: ${answeredCount}`);
     
     let errorText = results.find("#error-text");
     if (quiz.data("errors") > 0){

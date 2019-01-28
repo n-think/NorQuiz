@@ -11,9 +11,10 @@
 <div class="d-flex justify-content-center">
     <span id="check" class="btn btn-outline-success mx-3">Проверить</span>
     <span id="next" class="btn btn-outline-primary mx-3 d-none">Далее</span>
+    <span id="show-results" class="btn btn-outline-secondary mx-3 d-none">Показать результаты</span>
     <span id="reset" class="btn btn-outline-secondary mx-3 d-none">Сначала</span>
 </div>
-<div id="quiz" data-id="@Model.Quiz.Id" data-total="@Model.Quiz.Questions.Count" data-errors="0">
+<div id="quiz" data-id="@Model.Quiz.Id" data-total="@Model.Quiz.Questions.Count" data-errors="0" data-answered="0">
     @{ var qCounter = 1; }
     @foreach (var question in Model.Quiz.Questions.Take(Model.QuestionCount))
     {
