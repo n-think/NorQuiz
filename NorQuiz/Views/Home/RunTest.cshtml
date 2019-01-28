@@ -10,49 +10,59 @@
 
 <div class="d-flex justify-content-center">
     <span id="check" class="btn btn-outline-success mx-3">Проверить</span>
-    <span id="next" class="btn btn-outline-primary mx-3">Далее</span>
+    <span id="next" class="btn btn-outline-primary mx-3 d-none">Далее</span>
     <span id="reset" class="btn btn-outline-secondary mx-3 d-none">Сначала</span>
 </div>
-
-@foreach (var question in Model.Quiz.Questions.Take(Model.QuestionCount))
-{
-    <div class="question border border-dark rounded m-3">
-        <div class="h5 text-center m-3">
-            @question.Value
-        </div>
-        @foreach (var answer in question.Answers)
-        {
-            <div class="m-3 answer">
-                <input type="checkbox" class="big-checkbox"/>
-                <span class="answer-text" data-correct="@answer.Correct">@answer.Value</span>
+<div id="quiz" data-id="@Model.Quiz.Id" data-total="@Model.Quiz.Questions.Count" data-errors="0">
+    @{ var qCounter = 1; }
+    @foreach (var question in Model.Quiz.Questions.Take(Model.QuestionCount))
+    {
+        <div class="question border border-dark rounded m-3">
+            <div class="h5 text-center m-3">
+                №@(qCounter++) - <span class="question-value">@question.Value</span>
             </div>
-
-        }
-    </div>
-}
-@foreach (var question in Model.Quiz.Questions.Skip(Model.QuestionCount))
-{
-    <div class="question border border-dark rounded m-3 d-none">
-        <div class="h5 text-center m-3">
-            @question.Value
+            @foreach (var answer in question.Answers)
+            {
+                <div class="m-3 answer" data-correct="@answer.Correct">
+                    <input class="answer-checkbox big-checkbox" type="checkbox"/>
+                    <span class="answer-text">@answer.Value</span>
+                </div>
+            }
         </div>
-        @foreach (var answer in question.Answers)
-        {
-            <div class="m-3 answer">
-                <input type="checkbox" class="big-checkbox"/>
-                <span class="answer-text" data-correct="@answer.Correct">@answer.Value</span>
+    }
+    @foreach (var question in Model.Quiz.Questions.Skip(Model.QuestionCount))
+    {
+        <div class="question border border-dark rounded m-3 d-none">
+            <div class="h5 text-center m-3">
+                №@(qCounter++) - <span class="question-value">@question.Value</span>
             </div>
-
-        }
+            @foreach (var answer in question.Answers)
+            {
+                <div class="m-3 answer" data-correct="@answer.Correct">
+                    <input class="answer-checkbox big-checkbox" type="checkbox"/>
+                    <span class="answer-text">@answer.Value</span>
+                </div>
+            }
+        </div>
+    }
+</div>
+<div id="results" class="text-center d-none">
+    <span id="totals-text" class="d-block">Всего вопросов: @Model.Quiz.Questions.Count</span>
+    <span id="error-text" class="d-block"></span>
+    <div class="m-3">
+        <img id="fail-image" class="fail d-none" src="https://i.imgur.com/t19HbI8.jpg"></img>
+        <img id="success-image" class="success d-none" src="https://i.imgur.com/9qA8Vb4.jpg"></img>
     </div>
-}
+    <div id="errors-verbose" class="text-center d-none">
+        <span class="h4">Ошибки: </span>
+        <ul id="errors-verbose-ul" class="list-group">
+        </ul>
+    </div>
+</div>
+
 @section Scripts
 {
     <script>
         var questionCount = @Model.QuestionCount;
     </script>
 }
-
-
-
-
