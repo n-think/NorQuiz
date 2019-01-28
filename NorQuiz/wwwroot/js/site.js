@@ -5,7 +5,7 @@
 
 $("#run-test-button").on("click", gogopowerrangers);
 
-if (window.location.pathname.lastIndexOf("/RunTest") === 0) {
+if (window.location.pathname.toLowerCase().lastIndexOf("/runtest") === 0) {
     loadRunTestEventHandlers()
 }
 
@@ -14,6 +14,49 @@ function loadRunTestEventHandlers() {
     $("#next").on("click", next);
     $("#reset").on("click", reset);
 }
+
+if (window.location.pathname.toLowerCase().lastIndexOf("/editquiz") === 0) {
+    loadEditQuizEventHandlers()
+}
+
+function loadEditQuizEventHandlers() {
+    $(".add-another-answer").on("click",  addAnotherAnswer);
+    $(".remove-another-answer").on("click",  removeAnotherAnswer);
+}
+
+function addAnotherAnswer() {
+    let form = $(this)
+        .closest("form");
+    let modalBody = form
+        .find(".modal-body");
+
+    let num = form.data("count");
+    let questionId = form.data("question-id");
+    form.data().count++;
+
+    let str = `
+<div class="mb-3 extra">
+ <input name="[${num}].QuestionId" value="${questionId}" hidden/>
+ <textarea required class="form-control" name="[${num}].Value" rows="5" placeholder="Ответ"></textarea>
+ <input name="[${num}].Correct" type="checkbox" value="true"/>
+ <span>Правильный?</span>
+</div>`;
+    modalBody.append(str)
+}
+
+function removeAnotherAnswer() {
+    let form = $(this)
+        .closest("form");
+    
+    form
+        .find(".modal-body")
+        .children(".extra")
+        .last()
+        .remove();
+    
+    form.data().count--;
+}
+
 
 function check() {
     let activeAnswers = $(".question")

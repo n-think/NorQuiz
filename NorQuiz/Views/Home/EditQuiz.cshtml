@@ -23,7 +23,7 @@
                 <form asp-controller="Home" asp-action="AddQuizQuestion">
                     <div class="modal-body">
                         <input name="QuizId" value="@Model.Id" hidden/>
-                        <textarea class="form-control" name="Value" rows="5" placeholder="Вопрос"></textarea>
+                        <textarea required class="form-control" name="Value" rows="5" placeholder="Вопрос"></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Добавить</button>
@@ -34,7 +34,7 @@
         </div>
     </div>
 </div>
-<ul class="list-group">
+<ul id="questions" class="list-group">
     @foreach (var question in Model.Questions ?? Enumerable.Empty<Question>())
     {
         <div class="list-group-item list-group-item-action d-flex flex-row" data-toggle="collapse" href="#question-@question.Id" aria-expanded="false">
@@ -60,17 +60,25 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form asp-controller="Home" asp-action="AddQuestionAnswer">
+                    <form asp-controller="Home" asp-action="AddQuestionAnswers" data-count="1" data-question-id="@question.Id">
+                        <input name="quizId" value="@Model.Id" hidden/>
                         <div class="modal-body">
-                            <input name="QuestionId" value="@question.Id" hidden/>
-                            <input name="quizId" value="@Model.Id" hidden/>
                             Вопрос: @question.Value
-                            <textarea class="form-control" name="Value" rows="5" placeholder="Ответ"></textarea>
-                            <input name="Correct" type="checkbox" value="true" /><span>Правильный?</span>
+                            <div class="mb-3">
+                                <input name="[0].QuestionId" value="@question.Id" hidden/>
+                                <textarea required class="form-control" name="[0].Value" rows="5" placeholder="Ответ"></textarea>
+                                <input name="[0].Correct" type="checkbox" value="true"/><span>Правильный?</span>  
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Добавить</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                        <div class="modal-footer d-flex justify-content-between">
+                            <div>
+                                <button type="button" class="btn btn-outline-success add-another-answer">Еще ответ</button>
+                                <button type="button" class="btn btn-outline-danger remove-another-answer">Убрать последний</button>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-success">Добавить</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                            </div>
                         </div>
                     </form>
                 </div>

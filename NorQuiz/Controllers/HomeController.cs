@@ -97,14 +97,14 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost("/[action]")]
-        public async Task<IActionResult> AddQuestionAnswer(Answer answer, int? quizId)
+        public async Task<IActionResult> AddQuestionAnswers(List<Answer> answers, int? quizId)
         {
-            if (answer == null || answer.QuestionId == 0 || !quizId.HasValue)
+            if (answers == null || !answers.Any() || answers.Any(x => x.QuestionId == 0) || !quizId.HasValue)
             {
-                RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
 
-            Context.Add(answer);
+            Context.AddRange(answers);
             await Context.SaveChangesAsync();
 
             return RedirectToAction("EditQuiz", new {id = quizId.GetValueOrDefault()});
@@ -159,13 +159,13 @@ namespace WebApplication1.Controllers
 
             var quiz = await Context.Quizzes
                 .Where(x => x.Id == id.Value)
-                .Include(x=>x.Questions)
-                .ThenInclude(x=>x.Answers)
+                .Include(x => x.Questions)
+                .ThenInclude(x => x.Answers)
                 .FirstOrDefaultAsync();
 
             if (quiz == null)
             {
-                return RedirectToAction("Index"); 
+                return RedirectToAction("Index");
             }
 
             var shuffledQeQuestions = quiz.Questions.ToList();
