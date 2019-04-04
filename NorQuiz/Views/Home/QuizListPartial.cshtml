@@ -13,7 +13,7 @@
                 <div class="quiz-controls d-inline w-auto">
                     <form class="form-inline d-inline" asp-controller="Home" asp-action="RunTest" method="get">
                         <input class="form-control" name="questionCount" type="number" placeholder="кол-во вопр. за раз"/>
-                        <span id="run-test-button" class="btn btn-outline-success"><i class="icon-right-dir"></i></span>
+                        <span class="run-test-button btn btn-outline-success"><i class="icon-right-dir"></i></span>
                         <input name="Id" value="@quiz.Id" hidden>
                     </form>
                     <span onclick="window.location = '/editQuiz/@quiz.Id'" class="btn btn-outline-primary"><i class="icon-pencil"></i></span>

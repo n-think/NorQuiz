@@ -3,7 +3,7 @@
 
 // Write your JavaScript code.
 
-$("#run-test-button").on("click", gogopowerrangers);
+$(".run-test-button").on("click", gogopowerrangers);
 
 if (window.location.pathname.toLowerCase().lastIndexOf("/runtest") === 0) {
     loadRunTestEventHandlers()
