@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,22 +17,24 @@ namespace WebApplication1
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
             Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment Environment { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connStr =
-                $"Server=(localdb)\\mssqllocaldb;Database=NorQuiz;Trusted_Connection=True;MultipleActiveResultSets=true";
+            var connectionString = new SqliteConnectionStringBuilder()
+            {
+                Mode = SqliteOpenMode.ReadWriteCreate,
+                DataSource = Environment.WebRootPath + "/data.db"
+            }.ToString();
 
-            services.AddDbContext<QuizContext>(opts => opts.UseSqlServer(connStr));
+            services.AddDbContext<QuizContext>(opts => opts.UseSqlite(connectionString));
             services.AddTransient<DbContext, QuizContext>();
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -40,33 +43,42 @@ namespace WebApplication1
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services
+                .AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            app.UseRouting();
 
-            app.UseHttpsRedirection();
+            // if (env.IsDevelopment())
+            // {
+                app.UseDeveloperExceptionPage();
+            // }
+            // else
+            // {
+                // app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                // app.UseHsts();
+            // }
+
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(routes =>
             {
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
+                    );
+                routes.MapControllers();
+                
+                // routes.MapRoute(
+                // name: "default",
+                // template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

@@ -21,6 +21,7 @@ namespace WebApplication1.Controllers
             Context = context;
         }
 
+        [Route("")]
         public async Task<IActionResult> Index()
         {
             var quizes = await Context.Quizzes.Include(x => x.Questions).ToListAsync();
